@@ -117,7 +117,7 @@ col1, col2, col3 = st.columns(3)
 
 with col1:
     with st.container(border=True, height=300):
-        st.markdown("### 1️⃣ Record")
+        st.markdown("### Record")
         st.write("")
         with open("enregistreur.html", "r", encoding="utf-8") as f:
             components.html(f.read(), height=220)
@@ -127,7 +127,7 @@ with col1:
 # 2️⃣ UPLOAD
 with col2:
     with st.container(border=True, height=300):
-        st.markdown("### 2️⃣ Upload")
+        st.markdown("### Upload")
         audio_file = st.file_uploader("", type=["webm", "mp3", "wav", "ogg", "flac", "mp4", "m4a"])
         full_transcript = None
         if audio_file and api_key:
@@ -169,7 +169,7 @@ with col2:
 # 3️⃣ FORMAT
 with col3:
     with st.container(border=True, height=300):
-        st.markdown("### 3️⃣ Summarize")
+        st.markdown("### Summarize")
         choice = st.selectbox("", list(format_options.keys()))
         if choice == "Libre (personnalisé)":
             custom_prompt = st.text_area("✏️ Instructions personnalisées :", value="")
