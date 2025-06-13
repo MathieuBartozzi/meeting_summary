@@ -2,7 +2,10 @@ import streamlit as st
 import streamlit.components.v1 as components
 from openai import OpenAI
 from utils.audio_utils import safe_filename, get_audio_duration, split_audio
+from utils.usage_logger import log_usage
 import io
+from streamlit_extras.buy_me_a_coffee import button
+
 
 
 
@@ -53,7 +56,7 @@ with st.sidebar:
     st.header("🔐 Paramètres")
     api_key = st.text_input("Clé API OpenAI", type="password", placeholder="sk-...")
 
-    with st.expander("Comment obtenir une clé API OpenAI ?", expanded=True):
+    with st.popover("Comment obtenir une clé API OpenAI ?"):
         st.markdown("""
             - Crée un compte sur [platform.openai.com](https://platform.openai.com/)
             - Ajoute du crédit** dans l’onglet [Billing](https://platform.openai.com/account/billing/overview) pour accéder aux modèles.
@@ -61,6 +64,20 @@ with st.sidebar:
             - Clique sur **'Create new secret key'** et copie-la dans le champ ci-dessus.
             - **Important** : ⚠️ Ne partage jamais ta clé API publiquement
             """)
+    st.markdown("")
+    st.markdown("")
+    st.markdown("")
+    st.markdown("---")
+
+    st.sidebar.markdown(
+    "<div style='font-size: 0.85rem; margin-top: 0.5rem;'>Un petit café pour soutenir le projet ☕</div>",
+    unsafe_allow_html=True)
+    button(username="mathieubartozzi")
+
+
+
+
+
 
 
 
@@ -69,7 +86,7 @@ with st.sidebar:
 # ─────────────────────────────────────────────────────────────────────
 st.markdown("## 📝 Générateur de compte-rendu de réunion")
 
-col1, col2 = st.columns([2,1])
+col1, col2 = st.columns([4,1])
 with col1:
     st.info("""
     Ce service s'utilise en **3 étapes obligatoires** :
@@ -81,10 +98,10 @@ with col1:
 
 with col2:
     st.warning("""
-                **⚠️ Prudence avec tes données sensibles !**
+                **🔒 À propos des données traitées**
 
-                - Les fichiers audio et les transcriptions sont envoyés aux serveurs d’OpenAI.
-                - ➡️ N’utilise pas ce service pour des données personnelles ou confidentielles.
+                Les fichiers sont envoyés aux serveurs d’OpenAI. Évite d’y inclure des contenus sensibles.
+
                 """
     )
 
@@ -92,6 +109,8 @@ with col2:
 # ─────────────────────────────────────────────────────────────────────
 # 🧱 3 COLONNES PRINCIPALES
 # ─────────────────────────────────────────────────────────────────────
+st.markdown("---")
+
 col1, col2, col3 = st.columns(3)
 
 # 1️⃣ ENREGISTREUR
@@ -158,10 +177,12 @@ with col3:
 # ─────────────────────────────────────────────────────────────────────
 # 🔴 BOUTON GÉNÉRATION
 # ─────────────────────────────────────────────────────────────────────
-st.markdown("---")
+
+st.markdown("<div style='margin-top: 1.5rem;'></div>", unsafe_allow_html=True)
 
 if st.button("✨ Générer le compte-rendu", type="primary"):
     if full_transcript and api_key:
+        log_usage(format_choice=choice, duration=duration_min)
         with st.spinner("✍️ Génération en cours..."):
             response = client.chat.completions.create(
                 model="gpt-4o",

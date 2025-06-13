@@ -2,4 +2,5 @@ streamlit
 openai
 pydub
 ffmpeg-python
+streamlit-extras
 

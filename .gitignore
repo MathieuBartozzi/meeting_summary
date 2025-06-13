@@ -26,3 +26,6 @@ __pycache__/
 # Logs ou fichiers générés à runtime
 *.log
 *.tmp
+
+
+usage_logs.csv
