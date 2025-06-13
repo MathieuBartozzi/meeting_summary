@@ -1,0 +1,28 @@
+# Fichiers Python compilés
+__pycache__/
+*.py[cod]
+*.so
+
+# Fichiers système et IDE
+.DS_Store
+*.swp
+*.bak
+.idea/
+.vscode/
+
+# Clés et configurations locales
+.env
+*.env
+
+# Données audio ou uploads temporaires (si utilisés un jour)
+*.webm
+*.mp3
+*.wav
+*.m4a
+*.ogg
+*.flac
+*.mp4
+
+# Logs ou fichiers générés à runtime
+*.log
+*.tmp

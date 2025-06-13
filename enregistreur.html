@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Enregistreur audio</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .step-box {
+      background-color: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 6px;
+      padding: 1.2rem 1.5rem;
+      margin-top: 1rem;
+    }
+
+    .step-title {
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: #1f2937;
+      margin-bottom: 0.4rem;
+    }
+
+    .optional {
+      font-weight: normal;
+      font-size: 0.9rem;
+      color: #6b7280;
+    }
+
+    .status {
+      margin: 0.5rem 0;
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+
+    .btn {
+      padding: 0.45rem 0.9rem;
+      margin-right: 0.5rem;
+      border: none;
+      background-color: #2563eb;
+      color: white;
+      border-radius: 5px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+
+    .btn:disabled {
+      background-color: #d1d5db;
+      color: #6b7280;
+      cursor: not-allowed;
+    }
+
+    audio {
+      width: 100%;
+      margin-top: 0.8rem;
+    }
+
+    #downloadSection {
+      margin-top: 0.8rem;
+    }
+
+    #downloadBtn {
+      display: inline-block;
+      margin-top: 0.4rem;
+      background-color: #f3f4f6;
+      border: 1px solid #d1d5db;
+      padding: 0.4rem 0.9rem;
+      border-radius: 5px;
+      color: #1f2937;
+      font-weight: 500;
+      text-decoration: none;
+    }
+
+    #downloadBtn:hover {
+      background-color: #e5e7eb;
+    }
+  </style>
+</head>
+<body>
+  <div class="step-box">
+
+    <!-- <div class="status" id="status">⏸️ En attente de démarrage</div> -->
+    <button class="btn" id="startBtn">▶️ Démarrer</button>
+    <button class="btn" id="stopBtn" disabled>⏹️ Arrêter</button>
+
+    <audio id="player" controls></audio>
+
+    <div id="downloadSection" style="display:none;">
+      <a id="downloadBtn" download="enregistrement.webm">⬇️ Télécharger le fichier .webm</a>
+    </div>
+  </div>
+
+  <script>
+    let mediaRecorder;
+    let recordedChunks = [];
+
+    const status = document.getElementById("status");
+    const startBtn = document.getElementById("startBtn");
+    const stopBtn = document.getElementById("stopBtn");
+    const player = document.getElementById("player");
+    const downloadSection = document.getElementById("downloadSection");
+    const downloadBtn = document.getElementById("downloadBtn");
+
+    startBtn.onclick = async () => {
+      recordedChunks = [];
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaRecorder = new MediaRecorder(stream);
+
+      mediaRecorder.ondataavailable = e => {
+        if (e.data.size > 0) recordedChunks.push(e.data);
+      };
+
+      mediaRecorder.onstop = () => {
+        const blob = new Blob(recordedChunks, { type: "audio/webm" });
+        const url = URL.createObjectURL(blob);
+        player.src = url;
+
+        downloadBtn.href = url;
+        downloadSection.style.display = "block";
+        status.innerHTML = "✅ Enregistrement terminé – prêt à écouter ou télécharger";
+      };
+
+      mediaRecorder.start();
+      startBtn.disabled = true;
+      stopBtn.disabled = false;
+      downloadSection.style.display = "none";
+      status.innerHTML = "🔴 Enregistrement en cours...";
+    };
+
+    stopBtn.onclick = () => {
+      mediaRecorder.stop();
+      startBtn.disabled = false;
+      stopBtn.disabled = true;
+    };
+  </script>
+</body>
+</html>
