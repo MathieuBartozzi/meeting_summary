@@ -3,5 +3,4 @@ openai
 pydub
 ffmpeg-python
 streamlit-extras
-ffmpeg-python
-
+mutagen

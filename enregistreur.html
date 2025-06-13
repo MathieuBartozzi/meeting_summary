@@ -7,45 +7,19 @@
     body {
       font-family: system-ui, sans-serif;
       margin: 0;
-      padding: 0;
-    }
-
-    .step-box {
-      background-color: #f9fafb;
-      border: 1px solid #e5e7eb;
-      border-radius: 6px;
-      padding: 1.2rem 1.5rem;
-      margin-top: 1rem;
-    }
-
-    .step-title {
-      font-weight: 600;
-      font-size: 1.1rem;
-      color: #1f2937;
-      margin-bottom: 0.4rem;
-    }
-
-    .optional {
-      font-weight: normal;
-      font-size: 0.9rem;
-      color: #6b7280;
-    }
-
-    .status {
-      margin: 0.5rem 0;
-      font-size: 0.95rem;
-      font-weight: 500;
+      padding: 1.5rem;
+      background: #f9f9f9;
     }
 
     .btn {
-      padding: 0.45rem 0.9rem;
-      margin-right: 0.5rem;
+      padding: 0.5rem 1rem;
+      margin-right: 1rem;
       border: none;
       background-color: #2563eb;
       color: white;
       border-radius: 5px;
       font-weight: 600;
-      font-size: 0.95rem;
+      font-size: 1rem;
       cursor: pointer;
     }
 
@@ -57,16 +31,12 @@
 
     audio {
       width: 100%;
-      margin-top: 0.8rem;
-    }
-
-    #downloadSection {
-      margin-top: 0.8rem;
+      margin-top: 1rem;
     }
 
     #downloadBtn {
       display: inline-block;
-      margin-top: 0.4rem;
+      margin-top: 0.8rem;
       background-color: #f3f4f6;
       border: 1px solid #d1d5db;
       padding: 0.4rem 0.9rem;
@@ -82,28 +52,21 @@
   </style>
 </head>
 <body>
-  <div class="step-box">
+  <button class="btn" id="startBtn">🎙️ Enregistrer</button>
+  <button class="btn" id="stopBtn" disabled>⏹️ Arrêter</button>
 
-    <!-- <div class="status" id="status">⏸️ En attente de démarrage</div> -->
-    <button class="btn" id="startBtn">▶️ Démarrer</button>
-    <button class="btn" id="stopBtn" disabled>⏹️ Arrêter</button>
-
-    <audio id="player" controls></audio>
-
-    <div id="downloadSection" style="display:none;">
-      <a id="downloadBtn" download="enregistrement.webm">⬇️ Télécharger le fichier .webm</a>
-    </div>
+  <audio id="player" controls></audio>
+  <div>
+    <a id="downloadBtn" download="enregistrement.webm" style="display:none;">⬇️ Télécharger</a>
   </div>
 
   <script>
     let mediaRecorder;
     let recordedChunks = [];
 
-    const status = document.getElementById("status");
     const startBtn = document.getElementById("startBtn");
     const stopBtn = document.getElementById("stopBtn");
     const player = document.getElementById("player");
-    const downloadSection = document.getElementById("downloadSection");
     const downloadBtn = document.getElementById("downloadBtn");
 
     startBtn.onclick = async () => {
@@ -119,17 +82,14 @@
         const blob = new Blob(recordedChunks, { type: "audio/webm" });
         const url = URL.createObjectURL(blob);
         player.src = url;
-
         downloadBtn.href = url;
-        downloadSection.style.display = "block";
-        status.innerHTML = "✅ Enregistrement terminé – prêt à écouter ou télécharger";
+        downloadBtn.style.display = "inline-block";
       };
 
       mediaRecorder.start();
       startBtn.disabled = true;
       stopBtn.disabled = false;
-      downloadSection.style.display = "none";
-      status.innerHTML = "🔴 Enregistrement en cours...";
+      downloadBtn.style.display = "none";
     };
 
     stopBtn.onclick = () => {
